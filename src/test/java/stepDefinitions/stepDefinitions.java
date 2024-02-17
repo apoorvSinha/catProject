@@ -6,6 +6,9 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import utils.CatUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 
 public class stepDefinitions extends CatUtils{
@@ -13,10 +16,16 @@ public class stepDefinitions extends CatUtils{
     RequestSpecification requestSpecBuilder;
     ResponseSpecification responseSpecification;
     Response response;
+    Map<String, String> map;
 
     @Given("user is able to {string} the random {string} images from the server")
     public void user_is_able_to_the_random_images_from_the_server(String httpMethod, String limit) {
-        requestSpecification = setRequestSpecification(10);
+        map = new HashMap<>();
+        map.put("size", "med");
+        map.put("mime_types", "jpg");
+        map.put("order", "RANDOM");
+        map.put("limit", limit);
+        requestSpecification = setRequestSpecification(10, map);
         requestSpecBuilder = given().spec(requestSpecification).log().all();
         if (httpMethod.equalsIgnoreCase("GET")){
             responseSpecification = setResponseSpecification("GET");
@@ -24,7 +33,6 @@ public class stepDefinitions extends CatUtils{
                     .get("v1/images/search")
                     .then().log().all().spec(responseSpecification).extract().response();
         }
-
     }
 
     @When("user is able to upload the image on server")

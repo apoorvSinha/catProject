@@ -13,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class CatUtils {
@@ -22,13 +24,10 @@ public class CatUtils {
     static Properties properties;
     FileInputStream fis;
 
-    public RequestSpecification setRequestSpecification(int limit) {
+    public RequestSpecification setRequestSpecification(int limit, Map<String, String> map) {
         requestSpecification = new RequestSpecBuilder()
                 .setBaseUri(baseUri)
-                .addQueryParam("size", "med")
-                .addQueryParam("mime_types", "jpg")
-                .addQueryParam("order", "RANDOM")
-                    .addQueryParam("limit", limit)
+                .addQueryParams(map)
                 .addHeader("x-api-key", readApiKey())
                 .setContentType(ContentType.JSON).build();
         return requestSpecification;
