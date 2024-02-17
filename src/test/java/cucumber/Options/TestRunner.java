@@ -7,8 +7,7 @@ import org.junit.runner.RunWith;
 @RunWith(Cucumber.class)
 @CucumberOptions(
         features = "./src/test/java/features",
-        glue = {"stepDefinitions", "StepDefinitionsJira"},
-//        tags = {"@DeletePlace"},
+        glue = {"stepDefinitions"},
         plugin = "json:target/jsonReports/cucumber-report.json",
         dryRun = false
 )

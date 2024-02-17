@@ -1,7 +1,6 @@
 package stepDefinitions;
 
 import io.cucumber.java.en.*;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -21,8 +20,8 @@ public class stepDefinitions extends CatUtils{
         requestSpecBuilder = given().spec(requestSpecification).log().all();
         if (httpMethod.equalsIgnoreCase("GET")){
             responseSpecification = setResponseSpecification("GET");
-            response = requestSpecification.when()
-                    .get("/v1/images/search")
+            response = requestSpecBuilder.when()
+                    .get("v1/images/search")
                     .then().log().all().spec(responseSpecification).extract().response();
         }
 

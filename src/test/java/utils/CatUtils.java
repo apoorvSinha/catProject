@@ -28,7 +28,7 @@ public class CatUtils {
                 .addQueryParam("size", "med")
                 .addQueryParam("mime_types", "jpg")
                 .addQueryParam("order", "RANDOM")
-                .addQueryParam("limit", limit)
+                    .addQueryParam("limit", limit)
                 .addHeader("x-api-key", readApiKey())
                 .setContentType(ContentType.JSON).build();
         return requestSpecification;
