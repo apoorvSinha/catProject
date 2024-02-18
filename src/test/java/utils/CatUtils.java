@@ -24,21 +24,34 @@ public class CatUtils {
     static Properties properties;
     FileInputStream fis;
 
-    public RequestSpecification setRequestSpecification(int limit, Map<String, String> map) {
+    public RequestSpecification setRequestSpecification(Map<String, String> map, String contentType) {
+        String content = "";
+        if(contentType.equalsIgnoreCase("JSON")) {
+            content = ContentType.JSON.toString();
+        } else if (contentType.equalsIgnoreCase("FORM")) {
+            content = "multipart/form-data";
+        }
         requestSpecification = new RequestSpecBuilder()
                 .setBaseUri(baseUri)
                 .addQueryParams(map)
                 .addHeader("x-api-key", readApiKey())
-                .setContentType(ContentType.JSON).build();
+                .setContentType(content).build();
         return requestSpecification;
     }
 
-    public ResponseSpecification setResponseSpecification(String httpMethod) {
+    public ResponseSpecification setResponseSpecification(String httpMethod, String contentType) {
         int code = httpMethod.equalsIgnoreCase("GET") ? 200 : 201;
+        String content = "";
+        if(contentType.equalsIgnoreCase("TEXT")){
+            content = ContentType.TEXT.toString();
+        } else if (contentType.equalsIgnoreCase("JSON")) {
+            content = ContentType.JSON.toString();
+        }
         responseSpecification = new ResponseSpecBuilder()
                 .expectStatusCode(code)
-                .expectContentType(ContentType.JSON).build();
+                .expectContentType(content).build();
         return responseSpecification;
+
     }
 
     public String readApiKey() {

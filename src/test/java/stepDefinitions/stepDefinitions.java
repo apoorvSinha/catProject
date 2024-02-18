@@ -6,6 +6,12 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import utils.CatUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,18 +31,28 @@ public class stepDefinitions extends CatUtils{
         map.put("mime_types", "jpg");
         map.put("order", "RANDOM");
         map.put("limit", limit);
-        requestSpecification = setRequestSpecification(10, map);
+        requestSpecification = setRequestSpecification(map, "JSON");
         requestSpecBuilder = given().spec(requestSpecification).log().all();
         if (httpMethod.equalsIgnoreCase("GET")){
-            responseSpecification = setResponseSpecification("GET");
+            responseSpecification = setResponseSpecification("GET", "JSON");
             response = requestSpecBuilder.when()
                     .get("v1/images/search")
                     .then().log().all().spec(responseSpecification).extract().response();
         }
+        map.clear();
     }
 
-    @When("user is able to upload the image on server")
-    public void user_is_able_to_upload_the_image_on_server() {
+    @When("user is able to {string} the image on server")
+    public void user_is_able_to_the_image_on_server(String httpMethod) throws IOException {
+        requestSpecification = setRequestSpecification(map, "FORM");
+        requestSpecBuilder = given().spec(requestSpecification)
+                .log().all().multiPart("file", new File("/Users/sinhapoo/Downloads/cato.jpg"),"image/jpeg").relaxedHTTPSValidation();
+        if(httpMethod.equalsIgnoreCase("POST")){
+            responseSpecification = setResponseSpecification("POST", "JSON");
+            response = requestSpecBuilder.when()
+                    .post("v1/images/upload")
+                    .then().log().all().spec(responseSpecification).extract().response();
+        }
 
     }
 
