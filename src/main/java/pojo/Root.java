@@ -1,20 +1,20 @@
 package pojo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Root {
-    public ArrayList<Object> breeds;
+    public List<Object> breeds;
     public String id;
     public String url;
     public int width;
     public int height;
-    public ArrayList<Category> categories;
+    public List<Category> categories;
 
-    public ArrayList<Object> getBreeds() {
+    public List<Object> getBreeds() {
         return breeds;
     }
 
-    public void setBreeds(ArrayList<Object> breeds) {
+    public void setBreeds(List<Object> breeds) {
         this.breeds = breeds;
     }
 
@@ -50,11 +50,11 @@ public class Root {
         this.height = height;
     }
 
-    public ArrayList<Category> getCategories() {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(ArrayList<Category> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 }
