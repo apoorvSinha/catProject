@@ -4,14 +4,12 @@ import io.cucumber.java.en.*;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import pojo.Root;
+import pojo.SuperRoot;
 import utils.CatUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +27,7 @@ public class stepDefinitions extends CatUtils{
         map = new HashMap<>();
         map.put("size", "med");
         map.put("mime_types", "jpg");
+        map.put("has_breeds", "0");
         map.put("order", "RANDOM");
         map.put("limit", limit);
         requestSpecification = setRequestSpecification(map, "JSON");
@@ -38,6 +37,10 @@ public class stepDefinitions extends CatUtils{
             response = requestSpecBuilder.when()
                     .get("v1/images/search")
                     .then().log().all().spec(responseSpecification).extract().response();
+        }
+        SuperRoot cat = response.as(SuperRoot.class);
+        for(Root st: cat.getRoot()) {
+            System.out.println(st.getHeight());
         }
         map.clear();
     }
