@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -40,10 +41,16 @@ public class CatUtils {
     }
 
     public ResponseSpecification setResponseSpecification(String httpMethod, String contentType) {
-        int code = httpMethod.equalsIgnoreCase("GET") ? 200 : 201;
+        int code;
+        switch (httpMethod.toUpperCase()) {
+            case "GET": code = 200; break;
+            case "DELETE": code = 204; break;
+            case "POST": code = 201; break;
+            default: code = 900;
+        }
         String content = "";
-        if(contentType.equalsIgnoreCase("TEXT")){
-            content = ContentType.TEXT.toString();
+        if(contentType.equalsIgnoreCase("HTML")){
+            content = ContentType.HTML.toString();
         } else if (contentType.equalsIgnoreCase("JSON")) {
             content = ContentType.JSON.toString();
         }
@@ -51,7 +58,6 @@ public class CatUtils {
                 .expectStatusCode(code)
                 .expectContentType(content).build();
         return responseSpecification;
-
     }
 
     public String readApiKey() {

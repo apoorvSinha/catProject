@@ -1,6 +1,7 @@
 package stepDefinitions;
 
 import io.cucumber.java.en.*;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.Assert.assertEquals;
 
 public class stepDefinitions extends CatUtils{
     RequestSpecification requestSpecification;
@@ -21,6 +23,8 @@ public class stepDefinitions extends CatUtils{
     ResponseSpecification responseSpecification;
     Response response;
     Map<String, String> map;
+    JsonPath js;
+    String id;
 
     @Given("user is able to {string} the random {string} images from the server")
     public void user_is_able_to_the_random_images_from_the_server(String httpMethod, String limit) {
@@ -38,10 +42,11 @@ public class stepDefinitions extends CatUtils{
                     .get("v1/images/search")
                     .then().log().all().spec(responseSpecification).extract().response();
         }
-        SuperRoot cat = response.as(SuperRoot.class);
-        for(Root st: cat.getRoot()) {
-            System.out.println(st.getHeight());
-        }
+        // TODO: Implement deserialization
+//        SuperRoot cat = response.as(SuperRoot.class);
+//        for(Root st: cat.getRoot()) {
+//            System.out.println(st.getHeight());
+//        }
         map.clear();
     }
 
@@ -56,11 +61,23 @@ public class stepDefinitions extends CatUtils{
                     .post("v1/images/upload")
                     .then().log().all().spec(responseSpecification).extract().response();
         }
-
+        js = new JsonPath(response.asString());
+        id = js.getString("id");
     }
 
     @Then("user is able to {string} the image from the server")
-    public void user_is_able_to_the_image_from_the_server(String string) {
-
+    public void user_is_able_to_the_image_from_the_server(String httpMethod) {
+        requestSpecification = setRequestSpecification(map, "JSON");
+        requestSpecBuilder = given().spec(requestSpecification).log().all();
+        if (httpMethod.equalsIgnoreCase("GET")){
+            responseSpecification = setResponseSpecification("GET", "JSON");
+            response = requestSpecBuilder.when()
+                    .get("v1/images/"+id)
+                    .then().log().all().spec(responseSpecification).extract().response();
+        } else if (httpMethod.equalsIgnoreCase("DELETE")) {
+            responseSpecification = setResponseSpecification("DELETE", "HTML");
+            response = requestSpecBuilder.when().delete("v1/images/"+id)
+                    .then().log().all().spec(responseSpecification).extract().response();
+        }
     }
 }
