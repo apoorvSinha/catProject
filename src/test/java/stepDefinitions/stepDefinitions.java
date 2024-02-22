@@ -1,17 +1,20 @@
 package stepDefinitions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.cucumber.java.en.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import pojo.Root;
-import pojo.SuperRoot;
 import utils.CatUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -25,9 +28,10 @@ public class stepDefinitions extends CatUtils{
     Map<String, String> map;
     JsonPath js;
     String id;
+    ObjectMapper objectMapper;
 
     @Given("user is able to {string} the random {string} images from the server")
-    public void user_is_able_to_the_random_images_from_the_server(String httpMethod, String limit) {
+    public void user_is_able_to_the_random_images_from_the_server(String httpMethod, String limit) throws JsonProcessingException {
         map = new HashMap<>();
         map.put("size", "med");
         map.put("mime_types", "jpg");
@@ -42,11 +46,24 @@ public class stepDefinitions extends CatUtils{
                     .get("v1/images/search")
                     .then().log().all().spec(responseSpecification).extract().response();
         }
-        // TODO: Implement deserialization
-//        SuperRoot cat = response.as(SuperRoot.class);
-//        for(Root st: cat.getRoot()) {
+        /*
+        2 ways to deserialize
+        */
+//        List<Root> cat =new ObjectMapper().readValue(response.asString(), new TypeReference<List<Root>>(){});
+//        for(Root st: cat) {
 //            System.out.println(st.getHeight());
 //        }
+        objectMapper = new ObjectMapper();
+        List<Root> objects = objectMapper.readValue(
+                response.asString(),
+                TypeFactory.defaultInstance().constructCollectionType(List.class, Root.class)
+        );
+
+        // Now, 'objects' contains the deserialized JSON array
+        for (Root obj : objects) {
+            // Perform actions with each object
+            System.out.println(obj.getHeight());
+        }
         map.clear();
     }
 
