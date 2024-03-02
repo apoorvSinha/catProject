@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
 
 public class stepDefinitions extends CatUtils{
     RequestSpecification requestSpecification;
@@ -71,7 +70,7 @@ public class stepDefinitions extends CatUtils{
     public void user_is_able_to_the_image_on_server(String httpMethod) throws IOException {
         requestSpecification = setRequestSpecification(map, "FORM");
         requestSpecBuilder = given().spec(requestSpecification)
-                .log().all().multiPart("file", new File("/Users/sinhapoo/Downloads/cato.jpg"),"image/jpeg").relaxedHTTPSValidation();
+                .log().all().multiPart("file", new File("/Users/sinhapoo/Downloads/test-files/cato.jpg"),"image/jpeg").relaxedHTTPSValidation();
         if(httpMethod.equalsIgnoreCase("POST")){
             responseSpecification = setResponseSpecification("POST", "JSON");
             response = requestSpecBuilder.when()
