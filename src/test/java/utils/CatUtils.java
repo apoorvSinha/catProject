@@ -1,6 +1,8 @@
 package utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
@@ -9,16 +11,14 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.kohsuke.rngom.binary.Pattern;
+import pojo.Root;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class CatUtils {
     private String baseUri = "https://api.thecatapi.com";
@@ -31,6 +31,7 @@ public class CatUtils {
     public JsonPath js;
     public ObjectMapper objectMapper;
     FileInputStream fis;
+    static public List<Root> objects;
 
     public RequestSpecification setRequestSpecification(Map<String, String> map, String contentType) {
         String content = "";
@@ -80,6 +81,20 @@ public class CatUtils {
             throw new RuntimeException(e);
         }
         return properties.getProperty("x-api-key");
+    }
+    
+    public List<Root> deserializeMyResponse(Response response) {
+        objectMapper = new ObjectMapper();
+        List<Root> objects = Collections.<Root>emptyList();
+        try {
+            objects = objectMapper.readValue(
+                    response.asString(),
+                    TypeFactory.defaultInstance().constructCollectionType(List.class, Root.class)
+            );
+        }catch (JsonProcessingException e){
+            e.printStackTrace();
+        }
+        return objects;
     }
 
 }

@@ -41,12 +41,7 @@ public class stepDefinitions extends CatUtils{
 //        for(Root st: cat) {
 //            System.out.println(st.getHeight());
 //        }
-        objectMapper = new ObjectMapper();
-        List<Root> objects = objectMapper.readValue(
-                response.asString(),
-                TypeFactory.defaultInstance().constructCollectionType(List.class, Root.class)
-        );
-
+        objects =  deserializeMyResponse(response);
         // Now, 'objects' contains the deserialized JSON array
         for (Root obj : objects) {
             // Perform actions with each object
