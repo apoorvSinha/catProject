@@ -5,9 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.cucumber.java.en.*;
 import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
 import pojo.Root;
 import utils.CatUtils;
 
@@ -15,19 +12,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
 public class stepDefinitions extends CatUtils{
-    RequestSpecification requestSpecification;
-    RequestSpecification requestSpecBuilder;
-    ResponseSpecification responseSpecification;
-    Response response;
-    Map<String, String> map;
-    JsonPath js;
-    String id;
-    ObjectMapper objectMapper;
+    public static String id;
 
     @Given("user is able to {string} the random {string} images from the server")
     public void user_is_able_to_the_random_images_from_the_server(String httpMethod, String limit) throws JsonProcessingException {

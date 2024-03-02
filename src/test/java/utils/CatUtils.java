@@ -1,8 +1,10 @@
 package utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
@@ -20,9 +22,14 @@ import java.util.Properties;
 
 public class CatUtils {
     private String baseUri = "https://api.thecatapi.com";
-    RequestSpecification requestSpecification;
-    ResponseSpecification responseSpecification;
+    public RequestSpecification requestSpecification;
+    public RequestSpecification requestSpecBuilder;
+    public ResponseSpecification responseSpecification;
     static Properties properties;
+    public Response response;
+    public Map<String, String> map;
+    public JsonPath js;
+    public ObjectMapper objectMapper;
     FileInputStream fis;
 
     public RequestSpecification setRequestSpecification(Map<String, String> map, String contentType) {
